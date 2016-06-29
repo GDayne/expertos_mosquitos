@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="lib" path="dist/ExpertTV.jar"/>
+	<classpathentry kind="lib" path="dist/lib/appframework-1.0.3.jar"/>
+	<classpathentry kind="lib" path="dist/lib/jess.jar"/>
+	<classpathentry kind="lib" path="dist/lib/jpedal_lgpl.jar"/>
+	<classpathentry kind="lib" path="dist/lib/JTattooDemo.jar"/>
+	<classpathentry kind="lib" path="dist/lib/substance.jar"/>
+	<classpathentry kind="lib" path="dist/STurismoCBBA.jar"/>
+	<classpathentry kind="lib" path="lib/appframework-1.0.3.jar"/>
+	<classpathentry kind="lib" path="lib/jess.jar"/>
+	<classpathentry kind="lib" path="lib/jpedal_lgpl.jar"/>
+	<classpathentry kind="lib" path="lib/JTattooDemo.jar"/>
+	<classpathentry kind="lib" path="lib/substance.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="C:/Users/karen/Desktop/Software_Expertos/Jess71p2/lib/jess.jar"/>
+	<classpathentry kind="lib" path="C:/Users/karen/Desktop/Software_Expertos/Jess71p2/lib/jsr94.jar"/>
+	<classpathentry kind="lib" path="C:/Users/karen/Desktop/Software_Expertos/junit-3.8.2.jar"/>
+	<classpathentry kind="lib" path="C:/Users/karen/Desktop/Software_Expertos/junit-4.10.jar"/>
+	<classpathentry kind="output" path="build/classes"/>
+</classpath>
