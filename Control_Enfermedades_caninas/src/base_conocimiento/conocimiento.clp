@@ -24,7 +24,7 @@
     
     (?opciones add  "Fiebre Alta")
     (?opciones add  "Fiebre Leve")
-    (?opciones add  "Fiebre Intermitente")
+    (?opciones add  "Fiebre leve e intermitente")
     
     ; Aquie esta la respuesta obtenida y nos muestra el cuadro de informacion
     (bind ?respuesta (?*VENTANA* preguntar ?pregunta ?opciones))
@@ -34,15 +34,13 @@
     (if (eq ?respuesta "Fiebre Alta")
          then (assert(dolor_muscular_articular)))
     (if (eq ?respuesta "Fiebre Leve")
-             ;then (assert(Sintomas_respiratorias)))
              then (assert(Tiene Sarpullidos )))
-    (if (eq ?respuesta "Fiebre Intermitente")
-             then (assert(Sintomas_de_los_oidos)))
+    (if (eq ?respuesta "Fiebre leve e intermitente")
+             then (assert(dolor_muscular_articular)))
      
 )
 
 (defrule regla2
-    ;;;;;;;;;(Sintomas_que_presenta_en_la_piel)
     (dolor_muscular_articular)
     =>
     (?*VENTANA* setMemoriaTrabajo "Sistema : Estas son algunas de las sintomas que podria presentar")
@@ -50,6 +48,7 @@
     (bind ?pregunta "Elije un sintoma")
     (bind ?opciones (new ArrayList))
     (?opciones add  "Dolor muscular intenso")
+    (?opciones add  "Dolor muscular leve")
     (?opciones add  "Dolor muscular y de articulaciones")
  
     (bind ?respuesta (?*VENTANA* preguntar ?pregunta ?opciones))
@@ -57,8 +56,10 @@
 
     (if (eq ?respuesta "Dolor muscular intenso")
             then (assert(presenta dolor de cabeza) ))
-    (if (eq ?respuesta "Dolor muscular de articulaciones")
-            then (assert(Zonas sin pelo de forma circular) ))
+    (if (eq ?respuesta "Dolor muscular leve")
+            then (assert(escalosfrios o Reaccion alergica en la piel) ));;;;;;;;;;;regla12
+    (if (eq ?respuesta "Dolor muscular y de articulaciones")
+            then (assert(tipo de dolor de cabeza) ));;;regla 7
    
 )
 (defrule regla3
@@ -79,7 +80,7 @@
     (if (eq ?respuesta "no")
            then (?*VENTANA* setImagenResp "pododermatitis.png" )
        (?*VENTANA* setMemoriaTrabajo "Sistema :La Enfermedad que tiene el can es:
-       PADODERMATITIS")   
+      SE DESCONOCE SU ENFERMEDAD")   
     )
 )
 
@@ -104,7 +105,7 @@
     (if (eq ?respuesta "no")
            then (?*VENTANA* setImagenResp "pododermatitis.png" )
        (?*VENTANA* setMemoriaTrabajo "Sistema :La Enfermedad que tiene el can es:
-       PADODERMATITIS")   
+       SE DESCONOCE SU ENFERMEDAD")   
     )
 )
 
@@ -124,17 +125,13 @@
     
     (if (eq ?respuesta "Sarpullidos")
        then (assert(conjuntivitis) ))
-    (if (eq ?respuesta "Picazon")
+    (if (eq ?respuesta "Exantema(Erupciones en la piel)")
            then (?*VENTANA* setImagenResp "sarna_sarcoptica.png" )
        (?*VENTANA* setMemoriaTrabajo "Sistema :La Enfermedad que tiene el can es:
-       SARNA SARCOPTICA")   
+       SE DESCONOCE SU ENFERMEDAD")   
     )
 )
 
-
-
-;;;;;;;;;;; REGLAS DE LAS ENFERMEDADES RESPIRATORIAS
-(printout t "REGLAS DE LAS ENFERMEDADES RESPIRATORIAS" crlf)
 
 (defrule regla6
     (conjuntivitis)
@@ -170,88 +167,80 @@
     (?*VENTANA* setMemoriaTrabajo (str-cat "Usuario : " ?respuesta))
     
     (if (eq ?respuesta "Dolor de cabeza leve")
-           then (assert(presenta vomitos) ))
-    (if (eq ?respuesta "Tos seca")
-           then (?*VENTANA* setImagenResp "tos_de_las_perreras.png" )
-       (?*VENTANA* setMemoriaTrabajo "Sistema :La Enfermedad que tiene el can es:
-       TOS DE LAS PERRERAS")   
-    )
+           then (assert(presenta vomitos o alergica en la piel) ))
+    (if (eq ?respuesta "Dolor de cabeza intenso")
+        then (assert(presenta vomitos o alergica en la piel) ))
 )
 
 (defrule regla8
-    (presenta vomitos)
+    (presenta vomitos o alergica en la piel)
     =>
-    (?*VENTANA* setMemoriaTrabajo "Sistema : El paciente presenta vomitos?")
+    (?*VENTANA* setMemoriaTrabajo "Sistema : Eliga un sintoma?")
 
-    (bind ?pregunta "El paciente presenta vomitos?")
+    (bind ?pregunta "Eliga un sintoma?")
     (bind ?opciones (new ArrayList))
-    (?opciones add  "Si")
-    (?opciones add  "No")
+    (?opciones add  "Vomitos")
+    (?opciones add  "Náuseas y vómitos")
+    (?opciones add  "Reaccion alergica en la piel")
     (bind ?respuesta (?*VENTANA* preguntar ?pregunta ?opciones))
     (?*VENTANA* setMemoriaTrabajo (str-cat "Usuario : " ?respuesta))
     ;;;;;;;;; PONER LA IMAGEN DE ZIKA
-    (if (eq ?respuesta "Si")
+    (if (eq ?respuesta "Vomitos")
            then (?*VENTANA* setImagenResp "leptospirosis_canina.png" )
        (?*VENTANA* setMemoriaTrabajo "Sistema :La Enfermedad que tiene el paciente es:
        ZIKA")   
     )
-    (if (eq ?respuesta "Problemas respiratorios")
-           then (?*VENTANA* setImagenResp "leptospirosis_canina.png" )
-       (?*VENTANA* setMemoriaTrabajo "Sistema :La Enfermedad que tiene el can es:
-       LEPTOSPIROSIS CANINA")   
-    )
+    (if (eq ?respuesta "Náuseas y vómitos")
+           then (assert(presenta perdida de apetito) ))
+    (if (eq ?respuesta "Reaccion alergica en la piel")
+           then (assert(ardor en las palmas de los pies de las manos) ))
 )
 
 (defrule regla9
-    (Diarrea)
+    (presenta perdida de apetito)
     =>
-    (?*VENTANA* setMemoriaTrabajo "Sistema : Elija un nuevo sintoma para saber la enfermedad ")
+    (?*VENTANA* setMemoriaTrabajo "Sistema : Tiene perdida de apetito? ")
 
-    (bind ?pregunta "Elije un nuevo sintoma que presenta")
+    (bind ?pregunta "Tiene perdida de apetito?")
     (bind ?opciones (new ArrayList))
-    (?opciones add  "Lagrimas")
-    (?opciones add  "Tos y vomitos")
+    (?opciones add  "si")
+    (?opciones add  "no")
     (bind ?respuesta (?*VENTANA* preguntar ?pregunta ?opciones))
     (?*VENTANA* setMemoriaTrabajo (str-cat "Usuario : " ?respuesta))
     
-    (if (eq ?respuesta "Lagrimas")
+    (if (eq ?respuesta "si")
+             then (assert(presenta dolor de garganta) ));;regla10
+    (if (eq ?respuesta "no")
            then (?*VENTANA* setImagenResp "moquillo.png" )
        (?*VENTANA* setMemoriaTrabajo "Sistema :La Enfermedad que tiene el can es:
-       MOQUILLO")   
-    )
-    (if (eq ?respuesta "Tos y vomitos")
-           then (?*VENTANA* setImagenResp "moquillo.png" )
-       (?*VENTANA* setMemoriaTrabajo "Sistema :La Enfermedad que tiene el can es:
-       MOQUILLO")   
+       SE DESCONOCE SU ENFERMDEDAD")   
     )
 )
+
 
 
 ;;;;;;;;;;; REGLAS DE LAS ENFERMEDADES DEL OIDO
 (printout t "REGLAS DE LAS ENFERMEDADES DEL OIDO" crlf)
 
 (defrule regla10
-    (Sintomas_de_los_oidos)
+    (presenta dolor de garganta)
     =>
-    (?*VENTANA* setMemoriaTrabajo "Sistema : Estas son algunas de los sintomas de ENFERMEDADES EN LOS OIDOS")
+    (?*VENTANA* setMemoriaTrabajo "Sistema : presenta dolor de garganta?")
 
-    (bind ?pregunta "Elije un sintoma en los oidos")
+    (bind ?pregunta "presenta dolor de garganta?")
     (bind ?opciones (new ArrayList))
-    (?opciones add  "Rascado de orejas")
-    (?opciones add  "Sacude la cabeza")
+    (?opciones add  "Si")
+    (?opciones add  "No")
     
     (bind ?respuesta (?*VENTANA* preguntar ?pregunta ?opciones))
     (?*VENTANA* setMemoriaTrabajo (str-cat "Usuario : " ?respuesta))
 
-    (if (eq ?respuesta "Rascado de orejas")
+    (if (eq ?respuesta "Si")
+         then (assert(presenta cansancio) )) ;;regla 11
+    (if (eq ?respuesta "No")
            then (?*VENTANA* setImagenResp "otitis_en_perros.png" )
        (?*VENTANA* setMemoriaTrabajo "Sistema :La Enfermedad que tiene el can es:
-       OTITIS EN PERROS")   
-    )
-    (if (eq ?respuesta "Sacude la cabeza")
-           then (?*VENTANA* setImagenResp "otitis_en_perros.png" )
-       (?*VENTANA* setMemoriaTrabajo "Sistema :La Enfermedad que tiene el can es:
-       OTITIS EN PERROS")   
+       SU ENFERMEDAD SE DESCONOCE")   
     )
 
 )
@@ -261,440 +250,149 @@
 
 
 (defrule regla11
-    (Sintomas_en_los_ojos)
+    (presenta cansancio)
     =>
-    (?*VENTANA* setMemoriaTrabajo "Sistema : Estas son algunas de los sintomas de las ENFERMEDADES EN LOS OJOS")
+    (?*VENTANA* setMemoriaTrabajo "Sistema : Presenta cansancio?")
 
-    (bind ?pregunta "Elije un sintoma que presenta en los ojos ")
+    (bind ?pregunta "Presenta cansancio?")
     (bind ?opciones (new ArrayList))
-    (?opciones add  "Enrojecimiento")
-    (?opciones add  "Pupilas dilatadas")
+    (?opciones add  "Si")
+    (?opciones add  "No")
     
     
     (bind ?respuesta (?*VENTANA* preguntar ?pregunta ?opciones))
     (?*VENTANA* setMemoriaTrabajo (str-cat "Usuario : " ?respuesta))
-
-    (if (eq ?respuesta "Enrojecimiento")
-            then (assert(Enrojecimiento) ))
-    (if (eq ?respuesta "Pupilas dilatadas")
+    ;; PONER LA IMAGEN DE LA ENFERMEDAD DE DENGUE
+    (if (eq ?respuesta "Si")
+              then (?*VENTANA* setImagenResp "otitis_en_perros.png" )
+       (?*VENTANA* setMemoriaTrabajo "Sistema :La Enfermedad que tiene el paciente es:
+       DENGUE")   
+    )
+    (if (eq ?respuesta "No")
             then (assert(Pupilas dilatadas) ))
    
 )
 
 
 (defrule regla12
-    (Enrojecimiento)
+    (escalosfrios)
     =>
-    (?*VENTANA* setMemoriaTrabajo "Sistema : Elija un nuevo sintoma para saber la enfermedad ")
+    (?*VENTANA* setMemoriaTrabajo "Sistema : Tiene escalosfrios?")
 
-    (bind ?pregunta "Elije un nuevo sintoma que presenta en los ojos")
+    (bind ?pregunta "Tiene escalosfrios?")
     (bind ?opciones (new ArrayList))
-    (?opciones add  "Laganias")
-    (?opciones add  "Picazon")
-    (?opciones add  "Lagrimeo")
+    (?opciones add  "Si")
+    (?opciones add  "No")
+   
     (bind ?respuesta (?*VENTANA* preguntar ?pregunta ?opciones))
     (?*VENTANA* setMemoriaTrabajo (str-cat "Usuario : " ?respuesta))
     
-    (if (eq ?respuesta "Laganias")
+    (if (eq ?respuesta "Si")
+           then (assert(tiene vomitos) ));;; arreglar regla13
+    (if (eq ?respuesta "No")
            then (?*VENTANA* setImagenResp "conjuntivitis_en_perros.png" )
        (?*VENTANA* setMemoriaTrabajo "Sistema :La Enfermedad que tiene el can es:
-       CONJUNTIVITIS EN PERROS")   
+       SU ENFERMEDAD SE DESCONOCE")   
     )
-    (if (eq ?respuesta "Picazon")
-           then (?*VENTANA* setImagenResp "conjuntivitis_en_perros.png" )
-       (?*VENTANA* setMemoriaTrabajo "Sistema :La Enfermedad que tiene el can es:
-       CONJUNTIVITIS EN PERROS")   
-    )
-    (if (eq ?respuesta "Lagrimeo")
-           then (?*VENTANA* setImagenResp "conjuntivitis_en_perros.png" )
-       (?*VENTANA* setMemoriaTrabajo "Sistema :La Enfermedad que tiene el can es:
-       CONJUNTIVITIS EN PERROS")   
-    )
+  
 )
 
 (defrule regla13
-    (Pupilas dilatadas)
+    (tiene vomitos)
     =>
-    (?*VENTANA* setMemoriaTrabajo "Sistema : Elija un nuevo sintoma para saber la enfermedad ")
+    (?*VENTANA* setMemoriaTrabajo "Sistema : Presenta vomitos?")
 
-    (bind ?pregunta "Elije un nuevo sintoma que presenta en los ojos")
+    (bind ?pregunta "Presenta vomitos?")
     (bind ?opciones (new ArrayList))
-    (?opciones add  "Cornea opaca")
-    (?opciones add  "Dolor en los ojos")
-    (?opciones add  "Mirada enrojecida")
+    (?opciones add  "Si")
+    (?opciones add  "No")
+    
     (bind ?respuesta (?*VENTANA* preguntar ?pregunta ?opciones))
     (?*VENTANA* setMemoriaTrabajo (str-cat "Usuario : " ?respuesta))
     
-    (if (eq ?respuesta "Cornea opaca")
+    (if (eq ?respuesta "Si")
+        then (assert(presenta sintomas gripales) ));;; arreglar regla14
+    (if (eq ?respuesta "No")
            then (?*VENTANA* setImagenResp "glaucoma.png" )
        (?*VENTANA* setMemoriaTrabajo "Sistema :La Enfermedad que tiene el can es:
-       GLAUCOMA")   
+       SU ENFERMEDAD SE DESCONOCE")   
     )
-    (if (eq ?respuesta "Dolor en los ojos")
-           then (?*VENTANA* setImagenResp "glaucoma.png" )
-       (?*VENTANA* setMemoriaTrabajo "Sistema :La Enfermedad que tiene el can es:
-       GLAUCOMA")   
-    )
-    (if (eq ?respuesta "Mirada enrojecida")
-           then (?*VENTANA* setImagenResp "glaucoma.png" )
-       (?*VENTANA* setMemoriaTrabajo "Sistema :La Enfermedad que tiene el can es:
-       GLAUCOMA")   
-    )
+   
 )
 
 
-;;;;;;;;;;; REGLAS DE LAS ENFERMEDADES URUGENITALES
-(printout t "REGLAS DE LAS ENFERMEDADES URURGENITALES" crlf)
 
 (defrule regla14
-    (Sintomas_urugenitales)
+    (presenta sintomas gripales)
     =>
-    (?*VENTANA* setMemoriaTrabajo "Sistema : Estas son algunas de las sintomas que podria presentar")
+    (?*VENTANA* setMemoriaTrabajo "presenta sintomas gripales?")
 
-    (bind ?pregunta "Elije un sintoma")
+    (bind ?pregunta "presenta sintomas gripales?")
     (bind ?opciones (new ArrayList))
-    (?opciones add  "Falta de apetito")
-    (?opciones add  "Crecimiento anormal en los testiculos")
-    (?opciones add  "Esterilidad")
-    (?opciones add  "Orina lechosa")
-    (?opciones add  "Mucosidad vaginal")
+    (?opciones add  "Si")
+    (?opciones add  "No")
 
     (bind ?respuesta (?*VENTANA* preguntar ?pregunta ?opciones))
     (?*VENTANA* setMemoriaTrabajo (str-cat "Usuario : " ?respuesta))
 
-    (if (eq ?respuesta "Falta de apetito")
-            then (assert(Falta de apetito) ))
-    (if (eq ?respuesta "Crecimiento anormal en los testiculos")
-            then (assert(Crecimiento anormal en los testiculos) ))
-    (if (eq ?respuesta "Esterilidad")
-            then (assert(Esterilidad) ))
-    (if (eq ?respuesta "Orina lechosa")
-            then (assert(Orina lechosa) ))
-    (if (eq ?respuesta "Mucosidad vaginal")
-            then (assert(Mucosidad vaginal) ))
+    (if (eq ?respuesta "Si")
+            then (?*VENTANA* setImagenResp "piometra.png" );;IMAGEN DE MALARIA
+       (?*VENTANA* setMemoriaTrabajo "Sistema :La Enfermedad que tiene el Paciente es:
+       MALARIA")   
+    )
+    (if (eq ?respuesta "No")
+            then (assert() ))
+    
     
 )
 
 (defrule regla15
-    (Falta de apetito)
+    (ardor en las palmas de los pies de las manos)
     =>
-    (?*VENTANA* setMemoriaTrabajo "Sistema : Elija un nuevo sintoma para saber la enfermedad ")
+    (?*VENTANA* setMemoriaTrabajo "Sistema : Tiene ardor en las palmas de los pies de las manos? ")
 
-    (bind ?pregunta "Elije un nuevo sintoma que presenta:")
+    (bind ?pregunta " Tiene ardor en las palmas de los pies de las manos?")
     (bind ?opciones (new ArrayList))
-    (?opciones add  "Mucha sed")
-    (?opciones add  "Dificultad de movimiento")
-    (?opciones add  "Mucha orina")
-    (?opciones add  "Diarrea")
+    (?opciones add  "Si")
+    (?opciones add  "No")
+    
     (bind ?respuesta (?*VENTANA* preguntar ?pregunta ?opciones))
     (?*VENTANA* setMemoriaTrabajo (str-cat "Usuario : " ?respuesta))
     
-    (if (eq ?respuesta "Mucha sed")
+    (if (eq ?respuesta "Si")
+         then (assert(presenta cansacio y depresion) ))
+    (if (eq ?respuesta "No")
            then (?*VENTANA* setImagenResp "piometra.png" )
        (?*VENTANA* setMemoriaTrabajo "Sistema :La Enfermedad que tiene el can es:
-       PIOMETRA")   
+       SU ENFERMEDAD SE DESCONOCE")   
     )
-    (if (eq ?respuesta "Dificultad de movimiento")
-           then (?*VENTANA* setImagenResp "piometra.png" )
-       (?*VENTANA* setMemoriaTrabajo "Sistema :La Enfermedad que tiene el can es:
-       PIOMETRA")   
-    )
-    (if (eq ?respuesta "Mucha orina")
-           then (?*VENTANA* setImagenResp "piometra.png" )
-       (?*VENTANA* setMemoriaTrabajo "Sistema :La Enfermedad que tiene el can es:
-       PIOMETRA")   
-    )
-    (if (eq ?respuesta "Diarrea")
-           then (?*VENTANA* setImagenResp "piometra.png" )
-       (?*VENTANA* setMemoriaTrabajo "Sistema :La Enfermedad que tiene el can es:
-       PIOMETRA")   
-    )
+   
 )
 
 (defrule regla16
-    (Crecimiento anormal en los testiculos)
+    (presenta cansacio y depresion)
     =>
-    (?*VENTANA* setMemoriaTrabajo "Sistema : Elija un nuevo sintoma para saber la enfermedad ")
+    (?*VENTANA* setMemoriaTrabajo "Sistema : presenta cansacio y depresion? ")
 
-    (bind ?pregunta "Elije un nuevo sintoma que presenta:")
+    (bind ?pregunta "presenta cansacio y depresion?")
     (bind ?opciones (new ArrayList))
-    (?opciones add  "Zona enrojecida")
-    (?opciones add  "Inflamacion")
-    (?opciones add  "Dolor en los testiculos")
+    (?opciones add  "Si")
+    (?opciones add  "No")
+    
     
     (bind ?respuesta (?*VENTANA* preguntar ?pregunta ?opciones))
     (?*VENTANA* setMemoriaTrabajo (str-cat "Usuario : " ?respuesta))
     
-    (if (eq ?respuesta "Zona enrojecida")
+    (if (eq ?respuesta "Si")
+           then (?*VENTANA* setImagenResp "tumor_venereo.png" )
+       (?*VENTANA* setMemoriaTrabajo "Sistema :La Enfermedad que tiene el paciente es:
+       CHIKUNGUNA")   
+    )
+    (if (eq ?respuesta "No")
            then (?*VENTANA* setImagenResp "tumor_venereo.png" )
        (?*VENTANA* setMemoriaTrabajo "Sistema :La Enfermedad que tiene el can es:
-       TUMOR VENEREO CONTAGIOSO TVT")   
-    )
-    (if (eq ?respuesta "Inflamacion")
-           then (?*VENTANA* setImagenResp "tumor_venereo.png" )
-       (?*VENTANA* setMemoriaTrabajo "Sistema :La Enfermedad que tiene el can es:
-       TUMOR VENEREO CONTAGIOSO TVT")   
-    )
-    (if (eq ?respuesta "Dolor en los testiculos")
-           then (?*VENTANA* setImagenResp "tumor_venereo.png" )
-       (?*VENTANA* setMemoriaTrabajo "Sistema :La Enfermedad que tiene el can es:
-       TUMOR VENEREO CONTAGIOSO TVT")   
+      ES PROBABLE QUE TENGA CHIKUNGUNA")   
     )
     
-)
-
-(defrule regla17
-    (Esterilidad)
-    =>
-    (?*VENTANA* setMemoriaTrabajo "Sistema : Elija un nuevo sintoma para saber la enfermedad ")
-
-    (bind ?pregunta "Elije un nuevo sintoma que presenta:")
-    (bind ?opciones (new ArrayList))
-    (?opciones add  "Abortos")
-    (?opciones add  "Inflamacion testicular")
-    
-    
-    (bind ?respuesta (?*VENTANA* preguntar ?pregunta ?opciones))
-    (?*VENTANA* setMemoriaTrabajo (str-cat "Usuario : " ?respuesta))
-    
-    (if (eq ?respuesta "Abortos")
-           then (?*VENTANA* setImagenResp "brucelosis.png" )
-       (?*VENTANA* setMemoriaTrabajo "Sistema :La Enfermedad que tiene el can es:
-       BRUCELOSIS")   
-    )
-    (if (eq ?respuesta "Inflamacion testicular")
-           then (?*VENTANA* setImagenResp "brucelosis.png" )
-       (?*VENTANA* setMemoriaTrabajo "Sistema :La Enfermedad que tiene el can es:
-       BRUCELOSIS")   
-    )
-    
-    
-)
-
-(defrule regla18
-    (Orina lechosa)
-    =>
-    (?*VENTANA* setMemoriaTrabajo "Sistema : Elija un nuevo sintoma para saber la enfermedad ")
-
-    (bind ?pregunta "Elije un nuevo sintoma que presenta:")
-    (bind ?opciones (new ArrayList))
-    (?opciones add  "Mal olor en la orina")
-    (?opciones add  "Infeccion en la vejiga")
-    (?opciones add  "Perdida de apetito")
-    (?opciones add  "Dolor al orinar")
-    (bind ?respuesta (?*VENTANA* preguntar ?pregunta ?opciones))
-    (?*VENTANA* setMemoriaTrabajo (str-cat "Usuario : " ?respuesta))
-    
-    (if (eq ?respuesta "Mal olor en la orina")
-           then (?*VENTANA* setImagenResp "urolitiasis.png" )
-       (?*VENTANA* setMemoriaTrabajo "Sistema :La Enfermedad que tiene el can es:
-       UROLITIASIS")   
-    )
-    (if (eq ?respuesta "Infeccion en la vejiga")
-           then (?*VENTANA* setImagenResp "urolitiasis.png" )
-       (?*VENTANA* setMemoriaTrabajo "Sistema :La Enfermedad que tiene el can es:
-       UROLITIASIS")   
-    )
-    (if (eq ?respuesta "Perdida de apetito")
-           then (?*VENTANA* setImagenResp "urolitiasis.png" )
-       (?*VENTANA* setMemoriaTrabajo "Sistema :La Enfermedad que tiene el can es:
-       UROLITIASIS")   
-    )
-    (if (eq ?respuesta "Dolor al orinar")
-           then (?*VENTANA* setImagenResp "urolitiasis.png" )
-       (?*VENTANA* setMemoriaTrabajo "Sistema :La Enfermedad que tiene el can es:
-       UROLITIASIS")   
-    )
-)
-
-(defrule regla19
-    (Mucosidad vaginal)
-    =>
-    (?*VENTANA* setMemoriaTrabajo "Sistema : Elija un nuevo sintoma para saber la enfermedad ")
-
-    (bind ?pregunta "Elije un nuevo sintoma que presenta:")
-    (bind ?opciones (new ArrayList))
-    (?opciones add  "Infeccion")
-    (?opciones add  "Mal olor")
-    (?opciones add  "Color amarillento")
-    
-    (bind ?respuesta (?*VENTANA* preguntar ?pregunta ?opciones))
-    (?*VENTANA* setMemoriaTrabajo (str-cat "Usuario : " ?respuesta))
-    
-    (if (eq ?respuesta "Infeccion")
-           then (?*VENTANA* setImagenResp "vaginitis.png" )
-       (?*VENTANA* setMemoriaTrabajo "Sistema :La Enfermedad que tiene el can es:
-       VAGINITIS")   
-    )
-    (if (eq ?respuesta "Mal olor")
-           then (?*VENTANA* setImagenResp "vaginitis.png" )
-       (?*VENTANA* setMemoriaTrabajo "Sistema :La Enfermedad que tiene el can es:
-       VAGINITIS")   
-    )
-    (if (eq ?respuesta "Color amarillento")
-           then (?*VENTANA* setImagenResp "vaginitis.png" )
-       (?*VENTANA* setMemoriaTrabajo "Sistema :La Enfermedad que tiene el can es:
-       VAGINITIS")   
-    )
-)
-
-;;;;;;;;;;; REGLAS DE OTRAS ENFERMEDADES
-(printout t "REGLAS DE REGLAS DE OTRAS ENFERMEDADES" crlf)
-
-(defrule regla20
-    (Otros_sintomas)
-    =>
-    (?*VENTANA* setMemoriaTrabajo "Sistema : Estas son algunas de las sintomas que podria presentar")
-
-    (bind ?pregunta "Elije un sintoma")
-    (bind ?opciones (new ArrayList))
-    (?opciones add  "Ansiedad")
-    (?opciones add  "Hemoragias")
-    (?opciones add  "Dolor abdominal")
-    (?opciones add  "Anorexia")
-    
-
-    (bind ?respuesta (?*VENTANA* preguntar ?pregunta ?opciones))
-    (?*VENTANA* setMemoriaTrabajo (str-cat "Usuario : " ?respuesta))
-
-    (if (eq ?respuesta "Ansiedad")
-            then (assert(Ansiedad) ))
-    (if (eq ?respuesta "Hemoragias")
-            then (assert(Hemoragias) ))
-    (if (eq ?respuesta "Dolor abdominal")
-            then (assert(Dolor abdominal) ))
-    (if (eq ?respuesta "Anorexia")
-            then (assert(Anorexia) ))
-)
-
-(defrule regla21
-    (Ansiedad)
-    =>
-    (?*VENTANA* setMemoriaTrabajo "Sistema : Elija un nuevo sintoma para saber la enfermedad ")
-
-    (bind ?pregunta "Elije un nuevo sintoma que presenta:")
-    (bind ?opciones (new ArrayList))
-    (?opciones add  "Agresividad")
-    (?opciones add  "Hormigueos")
-    (?opciones add  "Espuma en la boca")
-    (?opciones add  "Paralisis en  las extremidades")
-    (bind ?respuesta (?*VENTANA* preguntar ?pregunta ?opciones))
-    (?*VENTANA* setMemoriaTrabajo (str-cat "Usuario : " ?respuesta))
-    
-    (if (eq ?respuesta "Agresividad")
-           then (?*VENTANA* setImagenResp "rabia.png" )
-       (?*VENTANA* setMemoriaTrabajo "Sistema :La Enfermedad que tiene el can es:
-       RABIA")   
-    )
-    (if (eq ?respuesta "Hormigueos")
-           then (?*VENTANA* setImagenResp "rabia.png" )
-       (?*VENTANA* setMemoriaTrabajo "Sistema :La Enfermedad que tiene el can es:
-       RABIA")   
-    )
-    (if (eq ?respuesta "Espuma en la boca")
-           then (?*VENTANA* setImagenResp "rabia.png" )
-       (?*VENTANA* setMemoriaTrabajo "Sistema :La Enfermedad que tiene el can es:
-       RABIA")   
-    )
-    (if (eq ?respuesta "Paralisis en  las extremidades")
-           then (?*VENTANA* setImagenResp "rabia.png" )
-       (?*VENTANA* setMemoriaTrabajo "Sistema :La Enfermedad que tiene el can es:
-       RABIA")   
-    )
-)
-
-(defrule regla22
-    (Hemoragias)
-    =>
-    (?*VENTANA* setMemoriaTrabajo "Sistema : Elija un nuevo sintoma para saber la enfermedad ")
-
-    (bind ?pregunta "Elije un nuevo sintoma que presenta:")
-    (bind ?opciones (new ArrayList))
-    (?opciones add  "Dolores musculares")
-    (?opciones add  "Diarrea")
-    (?opciones add  "Vomitos")
-    
-    (bind ?respuesta (?*VENTANA* preguntar ?pregunta ?opciones))
-    (?*VENTANA* setMemoriaTrabajo (str-cat "Usuario : " ?respuesta))
-    
-    (if (eq ?respuesta "Dolores musculares")
-           then (?*VENTANA* setImagenResp "parvovirosis.png" )
-       (?*VENTANA* setMemoriaTrabajo "Sistema :La Enfermedad que tiene el can es:
-       PARVOVIROSIS CANINA")   
-    )
-    (if (eq ?respuesta "Diarrea")
-           then (?*VENTANA* setImagenResp "parvovirosis.png" )
-       (?*VENTANA* setMemoriaTrabajo "Sistema :La Enfermedad que tiene el can es:
-       PARVOVIROSIS CANINA")   
-    )
-    (if (eq ?respuesta "Vomitos")
-           then (?*VENTANA* setImagenResp "parvovirosis.png" )
-       (?*VENTANA* setMemoriaTrabajo "Sistema :La Enfermedad que tiene el can es:
-       PARVOVIROSIS CANINA")   
-    )
-    
-)
-
-(defrule regla23
-    (Dolor abdominal)
-    =>
-    (?*VENTANA* setMemoriaTrabajo "Sistema : Elija un nuevo sintoma para saber la enfermedad ")
-
-    (bind ?pregunta "Elije un nuevo sintoma que presenta:")
-    (bind ?opciones (new ArrayList))
-    (?opciones add  "Conjuntivitis")
-    (?opciones add  "Hemorragias")
-    (?opciones add  "Fiebre")
-    
-    (bind ?respuesta (?*VENTANA* preguntar ?pregunta ?opciones))
-    (?*VENTANA* setMemoriaTrabajo (str-cat "Usuario : " ?respuesta))
-    
-    (if (eq ?respuesta "Conjuntivitis")
-           then (?*VENTANA* setImagenResp "hepatitis_infecciosa.png" )
-       (?*VENTANA* setMemoriaTrabajo "Sistema :La Enfermedad que tiene el can es:
-       HEPATITIS INFECCIOSA")   
-    )
-    (if (eq ?respuesta "Hemorragias")
-           then (?*VENTANA* setImagenResp "hepatitis_infecciosa.png" )
-       (?*VENTANA* setMemoriaTrabajo "Sistema :La Enfermedad que tiene el can es:
-       HEPATITIS INFECCIOSA")   
-    )
-    (if (eq ?respuesta "Fiebre")
-           then (?*VENTANA* setImagenResp "hepatitis_infecciosa.png" )
-       (?*VENTANA* setMemoriaTrabajo "Sistema :La Enfermedad que tiene el can es:
-       HEPATITIS INFECCIOSA")   
-    )
-    
-)
-
-(defrule regla24
-    (Anorexia)
-    =>
-    (?*VENTANA* setMemoriaTrabajo "Sistema : Elija un nuevo sintoma para saber la enfermedad ")
-
-    (bind ?pregunta "Elije un nuevo sintoma que presenta:")
-    (bind ?opciones (new ArrayList))
-    (?opciones add  "Perdida de peso")
-    (?opciones add  "Cojeras")
-    (?opciones add  "Abultamiento en las mamas")
-    
-    (bind ?respuesta (?*VENTANA* preguntar ?pregunta ?opciones))
-    (?*VENTANA* setMemoriaTrabajo (str-cat "Usuario : " ?respuesta))
-    
-    (if (eq ?respuesta "Perdida de peso")
-           then (?*VENTANA* setImagenResp "tumor_mamario.png" )
-       (?*VENTANA* setMemoriaTrabajo "Sistema :La Enfermedad que tiene el can es:
-       TUMOR MAMARIO")   
-    )
-    (if (eq ?respuesta "Cojeras")
-           then (?*VENTANA* setImagenResp "tumor_mamario.png" )
-       (?*VENTANA* setMemoriaTrabajo "Sistema :La Enfermedad que tiene el can es:
-       TUMOR MAMARIO")   
-    )
-    (if (eq ?respuesta "Abultamiento en las mamas")
-           then (?*VENTANA* setImagenResp "tumor_mamario.png" )
-       (?*VENTANA* setMemoriaTrabajo "Sistema :La Enfermedad que tiene el can es:
-       TUMOR MAMARIO")   
-    )
     
 )
